@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Menu, Icon } from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react'
 import { useDispatch
   //  useSelector 
   } from 'react-redux'
 import { useIsMount } from '../../hooks/isMount'
+import './sidePanel.scss';
 
 import {
   setChannel as setChannelAction,
@@ -18,7 +19,8 @@ export default function Starred({ currentUser }) {
   const isMount = useIsMount()
 
   useEffect(() => {
-    isMount && userRef
+    const addStartoChannel = async ()=>{
+    isMount && await userRef
       .child(currentUser.uid)
       .child('starred')
       .on('child_added', snap => {
@@ -28,12 +30,14 @@ export default function Starred({ currentUser }) {
           starredChannel,
         ])
       })
+    }
+    addStartoChannel();
     return () => {
       userRef.child(`${currentUser.uid}/starred`).off()
     }
     
     /* eslint-disable react-hooks/exhaustive-deps */
-  }, [])
+  }, [starredChannels, userRef])
 
   useEffect(() => {
     userRef
@@ -56,14 +60,15 @@ export default function Starred({ currentUser }) {
   const renderStarredChannels = channels =>
     channels.length > 0 &&
     channels.map(channel => (
-      <Menu.Item
+      <p
+        className="menu-item-label"
         key={channel.id}
         onClick={() => channelClickHandler(channel)}
         name={channel.name}
-        style={{ opacity: 0.7 }}
+        // style={{ opacity: 0.7 }}
       >
-        # {channel.name}
-      </Menu.Item>
+        <Icon name="hashtag"/> {channel.name}
+      </p>
     ))
 
   const channelClickHandler = channel => {
@@ -76,7 +81,7 @@ export default function Starred({ currentUser }) {
     <div style={{ paddingBottom: '2rem' }}>
       <p className="menu-label">
         <span>
-          <Icon name="star" /> Channels
+          <Icon name="star" /> Starred Channels
         </span>{' '}
         ({starredChannels.length})
       </p>

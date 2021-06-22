@@ -39,6 +39,19 @@ export default function Messages({ currentUser, currentChannel }) {
   const isChannelPrivate = useSelector((state) => state.channel.private)
 
   const messagesEndRef = useRef(null)
+  const addUserStarListener = (channelId, userId) => {
+    userRef
+      .child(userId)
+      .child(`starred`)
+      .once('value')
+      .then((data) => {
+        if (data.val() !== null) {
+          const channelIds = Object.keys(data.val())
+          const prevStarred = channelIds.includes(channelId)
+          setIsStarred(prevStarred)
+        }
+      })
+  }
 
   useEffect(() => {
     if (user && channel) {
@@ -86,29 +99,18 @@ export default function Messages({ currentUser, currentChannel }) {
    * Star channel listener
    */
 
-  const addUserStarListener = (channelId, userId) => {
-    userRef
-      .child(userId)
-      .child(`starred`)
-      .once('value')
-      .then((data) => {
-        if (data.val() !== null) {
-          const channelIds = Object.keys(data.val())
-          const prevStarred = channelIds.includes(channelId)
-          setIsStarred(prevStarred)
-        }
-      })
-  }
+  
 
   const handleStarChannel = () => {
     setIsStarred(!isStarred)
   }
 
   useEffect(() => {
+    const addStarUseEffect = async ()=>{
     // If is starred! then add this channel to favorites
     if (!isMount) {
       if (isStarred) {
-        userRef.child(`${user.uid}/starred`).update({
+       await userRef.child((`${user.uid}/starred`)).update(JSON.parse(JSON.stringify({
           [channel.id]: {
             name: channel.name,
             description: channel.description,
@@ -117,16 +119,18 @@ export default function Messages({ currentUser, currentChannel }) {
               avatar: channel.createdBy.avatar,
             },
           },
-        })
+        })))
       } else {
         // if unstarred, then remove this channel from favorites
-        userRef.child(`${user.uid}/starred/${channel.id}`).remove((err) => {
+       await userRef.child(`${user.uid}/starred`).child(channel.id).remove((err) => {
           if (err !== null) {
             console.error('ERROR: ', err)
           }
         })
       }
     }
+  }
+  addStarUseEffect();
   }, [isStarred])
 
   const typingListener = (channelId) => {
@@ -295,6 +299,7 @@ export default function Messages({ currentUser, currentChannel }) {
     return (
       users.length > 0 &&
       users.map((tu) => {
+        console.log(tu)
         return (
           <div
             key={tu.id}

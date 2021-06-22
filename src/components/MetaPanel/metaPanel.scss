@@ -1,17 +1,17 @@
 .metapanel {
   width: 18vw;
-  margin-left: -1.8rem;
+  margin-left: -2.5rem;
   margin-top: 1.5rem;
   height: 95vh;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 @media only screen and (max-width: 675px) {
   .metapanel {
     width: 26vw;
-    margin-left: -4.8rem;
+    margin-left: -5rem;
     margin-top: 1.5rem;
     height: 95vh;
-    overflow: hidden;
+    overflow-y: scroll;
   }
 }
 .metalist {

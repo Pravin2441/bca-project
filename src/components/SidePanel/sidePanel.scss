@@ -3,6 +3,7 @@
   font-size: 1.2rem;
   overflow-y: scroll;
   overflow-x: hidden;
+  width: 19vw;
   // marginTop: '52px',
   //   background-color: rgb(163, 94, 94);
   // width: 20vw !important;
@@ -63,7 +64,7 @@
   visibility: visible;
 }
 
-@media only screen and (max-width: 675px) {
+@media only screen and (max-width: 700px) {
   .side-toggle {
     visibility: visible !important;
     color: rgb(184, 184, 184) !important;
@@ -82,6 +83,7 @@
     border-radius: 30px;
     transition: 0.3s;
     font-size: 30px !important;
+    // overflow-y: scroll;
   }
   .main-sidepanel {
     visibility: hidden !important;
